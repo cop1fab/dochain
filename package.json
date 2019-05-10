@@ -1,0 +1,43 @@
+{
+  "name": "dochain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "node_modules/.bin/eslint .",
+    "lint:fix": "prettier-eslint --write '**/*.js'",
+    "dev": "nodemon  index.js  --exec 'npm run lint && babel-node'",
+    "start": "babel-node index.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-preset-airbnb": "^3.2.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "method-override": "^3.0.0",
+    "morgan": "^1.9.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cop1fab/dochain.git"
+  },
+  "author": "Olivier Esuka <olivier.esuka@andela.com> (https://oesukam.me)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cop1fab/dochain/issues"
+  },
+  "homepage": "https://github.com/cop1fab/dochain#readme"
+}
