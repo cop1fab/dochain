@@ -3,8 +3,9 @@ import Joi from 'joi';
 class user {
   static create(req, res, next) {
     const schema = Joi.object().keys({
-      username: Joi.string().min(3).max(20),
-      picture: Joi.string().regex(/(https?:\/\/.*\.(?:png|jpg|jpeg))/i),
+      email: Joi.string().email().required(),
+      password: Joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/).required(),
+      type: Joi.string().valid('user', 'organization').required()
     });
 
     const result = Joi.validate(req.body, schema);
@@ -13,7 +14,7 @@ class user {
     }
     return res.status(400).json({
       status: 400,
-      message: Joi.error.details[0].message.replace(/[^a-zA-Z0-9 ]/g, ''),
+      message: result.error.details[0].message.replace(/[^a-zA-Z0-9 ]/g, ''),
     });
   }
 }
