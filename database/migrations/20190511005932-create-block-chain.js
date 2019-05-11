@@ -11,12 +11,20 @@ module.exports = {
       allowNull: true,
     },
     data: {
-      type: Sequelize.TEXT,
+      type: Sequelize.JSON,
       allowNull: false,
     },
     currHash: {
       type: Sequelize.STRING,
       allowNull: false,
+    },
+    fromPublicKey: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    toPublicKey: {
+      type: Sequelize.STRING,
+      allowNull: true,
     },
     createdAt: {
       allowNull: false,
@@ -27,5 +35,5 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('blockChains'),
+  down: (queryInterface, Sequelize) => queryInterface.dropTable('BlockChains'),
 };

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const blockChain = sequelize.define(
+  const BlockChain = sequelize.define(
     'BlockChain',
     {
       id: {
@@ -13,12 +13,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       data: {
-        type: DataTypes.TEXT,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       currHash: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      fromPublicKey: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      toPublicKey: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -31,8 +39,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  blockChain.associate = function (models) {
+  BlockChain.associate = function (models) {
     // associations can be defined here
   };
-  return blockChain;
+  return BlockChain;
 };

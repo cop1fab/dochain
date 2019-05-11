@@ -4,22 +4,39 @@ import db from '../database/models';
 
 export default class BlockChain {
   static async create(req, res) {
-    try {
-      const newBlockchain = {
-        prevHash: '',
-        data: req.body.data,
-        currHash: bcrypt.hashSync(req.body.data, 10),
-      };
+    let prevHash = '';
+    const newBlockchain = {
+      prevHash: '',
+      data: req.body.data,
+      currHash: bcrypt.hashSync(req.body.data, 10),
+    };
 
-      const lastBlockHash = await db.BlockChain.findAll();
-      if (lastBlockHash.length > 0) {
-        newBlockchain.prevHash = lastBlockHash[lastBlockHash.length - 1].dataValues.currHash;
-      }
-      const createdBlock = await db.BlockChain.create(newBlockchain);
+    const createdBlock = await db.BlockChain.create(newBlockchain);
 
-      return res.status(201).json({ createdBlock });
-    } catch (error) {
-      return res.status(500).json({ error });
+    const allBlocks = await db.BlockChain.findAll();
+
+    if (allBlocks.length > 1 && createdBlock) {
+      const checkPrevHash = await db.BlockChain.findOne({
+        where: { id: createdBlock.dataValues.id - 1 },
+      });
+      prevHash = checkPrevHash.dataValues.currHash;
     }
+
+    const updatedBlock = await db.BlockChain.update(
+      {
+        prevHash,
+        currHash: bcrypt.hashSync(
+          JSON.stringify({
+            blockId: createdBlock.dataValues.id,
+            data: createdBlock.dataValues.data,
+          }),
+        ),
+      },
+      { where: { id: createdBlock.dataValues.id }, returning: true },
+    );
+
+    return res.status(201).json({
+      block: updatedBlock[1][0],
+    });
   }
 }
