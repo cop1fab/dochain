@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import methodOverride from 'method-override';
+import routes from './routes';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -12,6 +13,8 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+
+app.use(routes);
 
 if (!isProduction) {
   // / catch 404 and forward to error handler
