@@ -4,32 +4,34 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { user } from '../database/models';
 
-
 dotenv.config();
 
 class User {
   static async keyPairs(done) {
     try {
-      generateKeyPair('rsa', {
-        modulusLength: 4096,
-        publicKeyEncoding: {
-          type: 'spki',
-          format: 'pem'
+      generateKeyPair(
+        'rsa',
+        {
+          modulusLength: 4096,
+          publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem',
+          },
+          privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+            cipher: 'aes-256-cbc',
+            passphrase: 'top secret',
+          },
         },
-        privateKeyEncoding: {
-          type: 'pkcs8',
-          format: 'pem',
-          cipher: 'aes-256-cbc',
-          passphrase: 'top secret'
-        }
-      }, (err, publicKey, privateKey) => {
-        done(publicKey, privateKey);
-      });
+        (err, publicKey, privateKey) => {
+          done(publicKey, privateKey);
+        },
+      );
     } catch (e) {
       return new Error(e.message);
     }
   }
-
 
   static async create(req, res) {
     try {
@@ -104,6 +106,36 @@ class User {
       status: 400,
       error: 'The action wasn/t successful',
     });
+  }
+
+  static async getUser(req, res) {
+    const { id } = req.params;
+    try {
+      const foundUser = await user.findOne({ where: { id } });
+      if (!foundUser) {
+        return res.status(404).json({
+          status: 404,
+          message: 'User not found!',
+        });
+      }
+      const userInfo = {
+        name: foundUser.name,
+        gender: foundUser.gender,
+        age: foundUser.age,
+        nationality: foundUser.nationality,
+        type: foundUser.type,
+        createdAt: foundUser.createdAt,
+      };
+      return res.status(200).json({
+        status: 200,
+        user: userInfo,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        message: error,
+      });
+    }
   }
 }
 

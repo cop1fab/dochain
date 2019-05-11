@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.use('/blockchains', blockchains);
 router.use('/auth', user);
+router.use('/users', user);
 
 export default router;
