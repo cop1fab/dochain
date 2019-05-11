@@ -16,19 +16,16 @@ app.use(methodOverride('_method'));
 
 app.use(routes);
 
+app.use('*', (req, res) => {
+  res.status(404).json({ status: 404, message: 'Page not found' });
+});
+
 if (!isProduction) {
   // / catch 404 and forward to error handler
   app.use((req, res, next) => {
     const err = new Error('Not Found');
     err.status = 404;
     next(err);
-  });
-  app.get('/*', (req, res, next) => {
-    if (req.headers.host.match(/^www\./) != null) {
-      res.redirect(`http://${req.headers.host.slice(4)}${req.url}`, 301);
-    } else {
-      next();
-    }
   });
 }
 
