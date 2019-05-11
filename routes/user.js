@@ -5,6 +5,6 @@ import validators from '../middlewares/validators/user';
 const router = express.Router();
 
 router.post('/signup', validators.create, user.create);
-router.post('/login', user.login);
+router.post('/login', validators.login, user.login);
 
 export default router;

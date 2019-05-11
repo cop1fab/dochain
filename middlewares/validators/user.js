@@ -3,9 +3,15 @@ import Joi from 'joi';
 class user {
   static create(req, res, next) {
     const schema = Joi.object().keys({
-      email: Joi.string().email().required(),
-      password: Joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/).required(),
-      type: Joi.string().valid('user', 'organization').required()
+      email: Joi.string()
+        .email()
+        .required(),
+      password: Joi.string()
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/)
+        .required(),
+      type: Joi.string()
+        .valid('user', 'organization')
+        .required(),
     });
 
     const result = Joi.validate(req.body, schema);
@@ -18,10 +24,14 @@ class user {
     });
   }
 
-  static check(req, res, next) {
+  static login(req, res, next) {
     const schema = Joi.object().keys({
-      email: Joi.string().email().required(),
-      password: Joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/).required(),
+      email: Joi.string()
+        .email()
+        .required(),
+      password: Joi.string()
+        .min(6)
+        .required(),
     });
 
     const result = Joi.validate(req.body, schema);

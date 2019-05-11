@@ -4,32 +4,34 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { user } from '../database/models';
 
-
 dotenv.config();
 
 class User {
   static async keyPairs(done) {
     try {
-      generateKeyPair('rsa', {
-        modulusLength: 4096,
-        publicKeyEncoding: {
-          type: 'spki',
-          format: 'pem'
+      generateKeyPair(
+        'rsa',
+        {
+          modulusLength: 4096,
+          publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem',
+          },
+          privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+            cipher: 'aes-256-cbc',
+            passphrase: 'top secret',
+          },
         },
-        privateKeyEncoding: {
-          type: 'pkcs8',
-          format: 'pem',
-          cipher: 'aes-256-cbc',
-          passphrase: 'top secret'
-        }
-      }, (err, publicKey, privateKey) => {
-        done(publicKey, privateKey);
-      });
+        (err, publicKey, privateKey) => {
+          done(publicKey, privateKey);
+        },
+      );
     } catch (e) {
       return new Error(e.message);
     }
   }
-
 
   static async create(req, res) {
     try {
@@ -81,28 +83,28 @@ class User {
       },
     });
 
-    if (
-      Object.keys(findUser.dataValues).length > 0
-      && bcrypt.compareSync(req.body.password, findUser.dataValues.password)
-    ) {
-      const payload = {
-        id: findUser.dataValues.id,
-        email: findUser.dataValues.email,
-      };
-
-      delete findUser.dataValues.password;
-
-      return res.status(200).send({
-        user: findUser.dataValues,
-        token: jwt.sign(payload, process.env.SECRET, {
-          expiresIn: '1d',
-        }),
-        message: 'Welcome back!',
+    if (!findUser) {
+      return res.status(401).send({
+        status: 401,
+        message: "Email and password don't match",
       });
     }
-    res.status(400).json({
-      status: 400,
-      error: 'The action wasn/t successful',
+
+    if (!bcrypt.compareSync(req.body.password, findUser.dataValues.password)) {
+      return res.status(401).send({
+        status: 401,
+        message: "Email and password don't match",
+      });
+    }
+
+    const payload = {
+      publicKey: findUser.publicKey,
+    };
+
+    return res.status(200).send({
+      user: { ...findUser.get(), password: undefined, privateKey: undefined },
+      token: jwt.sign(payload, process.env.SECRET),
+      message: 'Welcome back!',
     });
   }
 }
