@@ -1,9 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import {
-  user
-} from '../database/models';
+import { user } from '../database/models';
 
 dotenv.config();
 
@@ -14,10 +12,7 @@ export default class User {
 
       const result = await user.create(req.body);
 
-      const {
-        email,
-        type
-      } = result;
+      const { email, type } = result;
 
       const token = jwt.sign(req.body, process.env.SECRET);
 
@@ -25,7 +20,7 @@ export default class User {
         status: 201,
         user: {
           email,
-          type
+          type,
         },
         token,
       });
@@ -49,27 +44,32 @@ export default class User {
     // eslint-disable-next-line no-shadow
     const findUser = await user.findOne({
       where: {
-        email: req.body.email
-      }
+        email: req.body.email,
+      },
     });
 
-    if (Object.keys(findUser.dataValues).length > 0
-      && bcrypt.compareSync(req.body.password, findUser.dataValues.password)) {
+    if (
+      Object.keys(findUser.dataValues).length > 0
+      && bcrypt.compareSync(req.body.password, findUser.dataValues.password)
+    ) {
       const payload = {
         id: findUser.dataValues.id,
-        email: findUser.dataValues.email
+        email: findUser.dataValues.email,
       };
+
+      delete findUser.dataValues.password;
+
       return res.status(200).send({
         user: findUser.dataValues,
         token: jwt.sign(payload, process.env.SECRET, {
-          expiresIn: '1d'
+          expiresIn: '1d',
         }),
-        message: 'Welcome back!'
+        message: 'Welcome back!',
       });
     }
     res.status(400).json({
       status: 400,
-      error: 'The action wasn/t successful'
+      error: 'The action wasn/t successful',
     });
   }
 }
