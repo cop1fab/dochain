@@ -19,19 +19,19 @@ class User {
       return res.status(201).json({
         status: 201,
         user: { email, type },
-        token
+        token,
       });
     } catch (e) {
-      if (e.original.routine === '_bt_check_unique') {
+      if (e.original && e.original.routine === '_bt_check_unique') {
         return res.status(500).json({
           status: 500,
-          message: 'Email already exist'
+          message: 'Email already exist',
         });
       }
 
       return res.status(500).json({
         status: 500,
-        message: e.message
+        message: e.message,
       });
     }
   }
