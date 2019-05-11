@@ -21,11 +21,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       fromPublicKey: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       toPublicKey: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       createdAt: {
