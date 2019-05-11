@@ -16,6 +16,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-preset-airbnb": "^3.2.1",
     "bcryptjs": "^2.4.3",
+    "cheke": "^1.0.5",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
