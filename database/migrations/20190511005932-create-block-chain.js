@@ -19,11 +19,11 @@ module.exports = {
       allowNull: false,
     },
     fromPublicKey: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: true,
     },
     toPublicKey: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: true,
     },
     createdAt: {

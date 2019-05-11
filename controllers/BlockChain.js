@@ -5,11 +5,15 @@ import db from '../database/models';
 export default class BlockChain {
   static async create(req, res) {
     let prevHash = '';
+    const { publicKey } = req.user;
     const newBlockchain = {
       prevHash: '',
       data: req.body.data,
-      currHash: bcrypt.hashSync(req.body.data, 10),
+      currHash: bcrypt.hashSync(JSON.stringify(req.body.data), 10),
+      fromPublicKey: publicKey,
+      toPublicKey: req.body.topk
     };
+
 
     const createdBlock = await db.BlockChain.create(newBlockchain);
 
