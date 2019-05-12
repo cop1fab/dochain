@@ -4,6 +4,7 @@ class user {
   static create(req, res, next) {
     const schema = Joi.object().keys({
       email: Joi.string().email().required(),
+      name: Joi.string().required(),
       password: Joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/).required(),
       type: Joi.string().valid('user', 'organization').required()
     });
