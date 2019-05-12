@@ -11,9 +11,8 @@ export default class BlockChain {
       data: req.body.data,
       currHash: bcrypt.hashSync(JSON.stringify(req.body.data), 10),
       fromPublicKey: publicKey,
-      toPublicKey: req.body.topk
+      toPublicKey: req.body.toPublicKey,
     };
-
 
     const createdBlock = await db.BlockChain.create(newBlockchain);
 
@@ -41,6 +40,20 @@ export default class BlockChain {
 
     return res.status(201).json({
       block: updatedBlock[1][0],
+    });
+  }
+
+  static async getAllByKey(req, res) {
+    const allBlocks = await db.BlockChain.findAll({ where: { toPublicKey: req.params.publicKey } });
+
+    if (allBlocks.length > 0) {
+      return res.status(200).json({
+        records: allBlocks,
+      });
+    }
+
+    return res.status(404).json({
+      error: 'no record found',
     });
   }
 }
