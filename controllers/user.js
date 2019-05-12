@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { generateKeyPair } from 'crypto';
+import StellarSdk from 'stellar-sdk';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { user } from '../database/models';
@@ -8,29 +8,11 @@ dotenv.config();
 
 class User {
   static async keyPairs(done) {
-    try {
-      generateKeyPair(
-        'rsa',
-        {
-          modulusLength: 4096,
-          publicKeyEncoding: {
-            type: 'spki',
-            format: 'pem',
-          },
-          privateKeyEncoding: {
-            type: 'pkcs8',
-            format: 'pem',
-            cipher: 'aes-256-cbc',
-            passphrase: 'top secret',
-          },
-        },
-        (err, publicKey, privateKey) => {
-          done(publicKey, privateKey);
-        },
-      );
-    } catch (e) {
-      return new Error(e.message);
-    }
+    const pair = StellarSdk.Keypair.random();
+
+    const privateKey = pair.secret();
+    const publicKey = pair.publicKey();
+    done(publicKey, privateKey);
   }
 
   static async create(req, res) {
@@ -51,6 +33,8 @@ class User {
             status: 201,
             user: { email, type },
             token,
+            publicKey,
+            privateKey,
           });
         } catch (e) {
           if (e.original && e.original.routine === '_bt_check_unique') {
