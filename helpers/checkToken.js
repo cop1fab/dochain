@@ -21,7 +21,7 @@ const checkToken = async (req, res, next) => {
     const result = await user.findOne({ where: { publicKey: jwtPayload.publicKey } });
 
     if (result) {
-      req.user = jwtPayload;
+      req.user = result.dataValues;
       return next();
     }
 

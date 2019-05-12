@@ -29,7 +29,7 @@ class User {
             id, name, email, type
           } = result;
 
-          const token = jwt.sign({ id, name, publicKey }, process.env.SECRET);
+          const token = jwt.sign({ id, publicKey }, process.env.SECRET);
 
           return res.status(201).json({
             status: 201,
@@ -71,13 +71,19 @@ class User {
       },
     });
 
+    if (!findUser) {
+      res.status(404).json({
+        status: 404,
+        error: 'User don\'t match',
+      });
+    }
+
     if (
-      Object.keys(findUser.dataValues).length > 0
-      && bcrypt.compareSync(req.body.password, findUser.dataValues.password)
+      bcrypt.compareSync(req.body.password, findUser.dataValues.password)
     ) {
       const payload = {
-        id: findUser.dataValues.id,
-        email: findUser.dataValues.email,
+        id: findUser.id,
+        publicKey: findUser.publicKey,
       };
 
       delete findUser.dataValues.password;

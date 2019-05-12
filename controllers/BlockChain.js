@@ -6,9 +6,10 @@ export default class BlockChain {
   static async create(req, res) {
     let prevHash = '';
     const { publicKey } = req.user;
+    console.log(publicKey);
     const newBlockchain = {
       prevHash: '',
-      data: req.body.data,
+      data: { ...req.body.data, organization: req.user.name },
       currHash: bcrypt.hashSync(JSON.stringify(req.body.data), 10),
       fromPublicKey: publicKey,
       toPublicKey: req.body.toPublicKey,
