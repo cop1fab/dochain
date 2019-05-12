@@ -1,5 +1,5 @@
 import express from 'express';
-import cheke from 'cheke';
+// import cheke from 'cheke';
 import checktoken from '../helpers/checkToken';
 import BlockChainController from '../controllers/BlockChain';
 import asyncHandler from '../helpers/asyncHandler';
@@ -7,17 +7,6 @@ import asyncHandler from '../helpers/asyncHandler';
 const router = express.Router();
 
 router.get('/:publicKey', BlockChainController.getAllByKey);
-router.post(
-  '/',
-  cheke({
-    body: {
-      data: 'required|object',
-      fromPublicKey: 'required|string',
-      toPublicKey: 'required|string',
-    },
-  }),
-  checktoken,
-  asyncHandler(BlockChainController.create),
-);
+router.post('/', checktoken, asyncHandler(BlockChainController.create));
 
 export default router;
