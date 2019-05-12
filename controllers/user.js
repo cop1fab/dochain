@@ -20,18 +20,22 @@ class User {
       req.body.password = await bcrypt.hash(req.body.password, 10);
 
       return User.keyPairs(async (publicKey, privateKey) => {
-        const token = jwt.sign({ publicKey }, process.env.SECRET);
-
         req.body = { ...req.body, publicKey, privateKey };
 
         try {
           const result = await user.create(req.body);
 
-          const { email, type } = result;
+          const {
+            id, name, email, type
+          } = result;
+
+          const token = jwt.sign({ id, name, publicKey }, process.env.SECRET);
 
           return res.status(201).json({
             status: 201,
-            user: { email, type },
+            user: {
+              id, name, email, type
+            },
             token,
             publicKey,
             privateKey,
